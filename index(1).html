@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Evaluación de Limpieza de Sala</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b1020; --bg2:#121a33; --ink:#eaf0ff; --muted:#9aa7c7;
+  --glass:rgba(255,255,255,.06); --line:rgba(255,255,255,.12);
+  --excelente:#34d399; --bueno:#a3e635; --regular:#fbbf24; --mejorable:#fb923c;
+  --irregular:#c084fc; --deficiente:#f43f5e; --sinclases:#64748b; --sinregistro:#94a3b8; --critico:#ff4d5e;
+  --display:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;
+  --body:'Figtree','Segoe UI',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--body);color:var(--ink);line-height:1.6;background:var(--bg);overflow-x:hidden;
+  background-image:radial-gradient(900px 500px at 10% -5%,rgba(52,211,153,.14),transparent 60%),radial-gradient(800px 600px at 95% 30%,rgba(192,132,252,.12),transparent 60%),radial-gradient(900px 600px at 20% 95%,rgba(255,77,94,.10),transparent 60%);
+  background-attachment:fixed}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--excelente);outline-offset:3px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+section{padding:84px 0}
+h1,h2,h3{font-family:var(--display);line-height:1.1;letter-spacing:-.02em}
+h1{font-size:clamp(2.4rem,7vw,4.6rem);font-weight:800;max-width:14ch}
+h2{font-size:clamp(1.7rem,4vw,2.5rem);font-weight:700;margin-bottom:10px}
+.lead{color:var(--muted);max-width:56ch;font-size:1.08rem;margin-top:18px}
+.glass{background:var(--glass);border:1px solid var(--line);border-radius:20px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+
+/* Reveal */
+.rv{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1);transition-delay:var(--d,0s)}
+.rv.in{opacity:1;transform:none}
+
+/* Hero */
+.hero{min-height:100svh;display:flex;align-items:center;padding:60px 0}
+.hero .wrap{display:grid;grid-template-columns:1.05fr 1fr;gap:48px;align-items:center}
+.hero small{display:block;color:var(--muted);margin-top:22px}
+.cal{padding:22px}
+.cal-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;color:var(--muted);font-size:.9rem}
+.cal-head b{font-family:var(--display);color:var(--ink);font-size:1.05rem}
+.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.cell{aspect-ratio:1;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.04);display:grid;place-items:center;
+  font-family:var(--display);font-weight:700;font-size:.95rem;color:var(--muted);cursor:pointer;position:relative;padding:0;
+  opacity:.25;transform:scale(.85);transition:transform .25s,box-shadow .25s,opacity .5s,background .5s,color .5s}
+.cell.on{opacity:1;transform:none}
+.cell.on:hover{transform:translateY(-4px) scale(1.07);z-index:2}
+.cell[data-s=excelente].on,.cell[data-s=bueno].on,.cell[data-s=regular].on,.cell[data-s=mejorable].on,.cell[data-s=irregular].on,.cell[data-s=deficiente].on{color:#08101f;border-color:transparent;background:var(--c)}
+.cell[data-s=sinclases].on{background:rgba(100,116,139,.35);color:var(--ink)}
+.cell[data-s=sinregistro].on{background:repeating-linear-gradient(135deg,rgba(148,163,184,.28) 0 6px,rgba(148,163,184,.08) 6px 12px);color:var(--ink)}
+.cell[data-s=critico].on{background:repeating-linear-gradient(135deg,rgba(255,77,94,.38) 0 6px,rgba(255,77,94,.1) 6px 12px);border-color:rgba(255,77,94,.6);color:#fff;animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 6px rgba(255,77,94,.0),0 0 18px rgba(255,77,94,.45)}}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:18px;font-size:.82rem;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;background:var(--c)}
+.hint{margin-top:14px;font-size:.85rem;color:var(--muted)}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:34px}
+.stat{padding:22px}
+.stat b{display:block;font-family:var(--display);font-size:2.6rem;font-weight:800;line-height:1}
+.stat span{color:var(--muted);font-size:.95rem}
+
+/* Cards */
+.filters{display:flex;flex-wrap:wrap;gap:10px;margin:26px 0 30px}
+.chip{font:inherit;font-weight:500;color:var(--ink);background:var(--glass);border:1px solid var(--line);border-radius:999px;padding:8px 18px;cursor:pointer;transition:background .25s,transform .25s,border-color .25s}
+.chip:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.3)}
+.chip[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+.card{padding:24px;position:relative;overflow:hidden;transition:transform .35s cubic-bezier(.2,.7,.2,1),border-color .35s,box-shadow .35s;border-top:3px solid var(--c)}
+.card::after{content:"";position:absolute;inset:auto -30% -60% auto;width:220px;height:220px;border-radius:50%;background:var(--c);opacity:.07;filter:blur(30px);transition:opacity .35s,transform .35s}
+.card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(0,0,0,.4);border-color:var(--c)}
+.card:hover::after{opacity:.2;transform:scale(1.3)}
+.card.flash{animation:flash 1.6s ease}
+@keyframes flash{30%{box-shadow:0 0 0 3px var(--c),0 0 40px var(--c)}}
+.card.hide{display:none}
+.card .day{font-family:var(--display);font-size:1.5rem;font-weight:800}
+.badge{display:inline-block;margin-top:6px;padding:3px 12px;border-radius:999px;font-size:.82rem;font-weight:600;background:color-mix(in srgb,var(--c) 22%,transparent);color:var(--c)}
+.card p{margin-top:14px;color:#cbd5ee;font-size:.97rem}
+.who{margin-top:14px;padding-top:14px;border-top:1px solid var(--line);font-size:.88rem;color:var(--muted)}
+.who b{color:var(--ink);font-weight:600}
+
+/* Alert */
+.alert{position:relative;padding:44px;border-radius:26px;border:1px solid rgba(255,77,94,.5);overflow:hidden;
+  background:linear-gradient(135deg,rgba(255,77,94,.16),rgba(255,255,255,.04));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.alert::before{content:"";position:absolute;inset:0;border-radius:inherit;border:2px solid var(--critico);opacity:0;animation:ring 3s ease-out infinite;pointer-events:none}
+@keyframes ring{0%{opacity:.7;transform:scale(1)}100%{opacity:0;transform:scale(1.03)}}
+.alert h2{color:#fff}
+.alert .tag{display:inline-flex;align-items:center;gap:8px;font-weight:600;color:var(--critico);margin-bottom:14px}
+.alert .tag::before{content:"!";display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--critico);color:#fff;font-weight:800}
+.alert p{max-width:62ch;color:#f1d9dd;margin-top:12px}
+.bar{margin-top:30px}
+.bar-row{display:flex;justify-content:space-between;font-size:.88rem;color:#f1d9dd;margin-bottom:8px}
+.track{display:flex;height:16px;border-radius:99px;overflow:hidden;background:rgba(255,255,255,.08)}
+.track span{width:0;transition:width 1.6s cubic-bezier(.2,.7,.2,1)}
+.alert.in .track span{width:var(--w)}
+.impact{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:30px}
+.impact div{padding:18px;border-radius:16px;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.08);transition:transform .3s}
+.impact div:hover{transform:translateY(-4px)}
+.impact b{display:block;margin-bottom:4px}
+.impact span{font-size:.92rem;color:#e6c9ce}
+footer{padding:50px 0 70px;color:var(--muted);text-align:center;font-size:.9rem}
+
+@media(max-width:860px){.hero .wrap{grid-template-columns:1fr}.alert{padding:28px 22px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}.cell{opacity:1;transform:none}.track span{width:var(--w)}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div>
+      <h1 class="rv">Evaluación de limpieza de sala</h1>
+      <p class="lead rv" style="--d:.15s">Seguimiento de 28 días del orden y la limpieza de la sala. Cada cuadro del calendario es un día: toca uno para ver su detalle.</p>
+      <small class="rv" style="--d:.3s">Baja para ver el detalle día a día y el análisis crítico.</small>
+    </div>
+    <div class="glass cal rv" style="--d:.2s">
+      <div class="cal-head"><b>Calendario del período</b><span>28 días</span></div>
+      <div class="grid" id="grid" aria-label="Calendario de 28 días"></div>
+      <div class="legend" id="legend"></div>
+      <p class="hint">Los últimos 10 días quedaron sin ningún registro visual.</p>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2 class="rv">El período en cifras</h2>
+    <div class="stats" id="stats"></div>
+  </div>
+</section>
+
+<section id="detalle">
+  <div class="wrap">
+    <h2 class="rv">Día a día</h2>
+    <p class="lead rv">Filtra para ver solo lo que te interesa.</p>
+    <div class="filters rv" id="filters" role="group" aria-label="Filtros">
+      <button class="chip" data-f="all" aria-pressed="true">Todos</button>
+      <button class="chip" data-f="eval" aria-pressed="false">Con evaluación</button>
+      <button class="chip" data-f="noclass" aria-pressed="false">Sin clases</button>
+      <button class="chip" data-f="norec" aria-pressed="false">Sin registro</button>
+    </div>
+    <div class="cards" id="cards"></div>
+  </div>
+</section>
+
+<section id="analisis">
+  <div class="wrap">
+    <div class="alert rv" id="alert">
+      <span class="tag">Análisis crítico</span>
+      <h2>Faltó registrar demasiados días, y casi no hay fotos</h2>
+      <p>El mayor problema del proyecto fue la falta de registro. Muchos días quedaron sin documentar y, sobre todo, faltaron las fotos de la actividad en gran parte del período, especialmente del día 19 al 28.</p>
+      <p>Sin imágenes no se puede comprobar el estado de la sala ni comparar un día con otro, así que el seguimiento continuo de la limpieza se perdió justo cuando más se necesitaba.</p>
+      <div class="bar">
+        <div class="bar-row"><span>Cobertura del período</span><span>7 de 28 días con evaluación</span></div>
+        <div class="track" aria-hidden="true">
+          <span style="--w:25%;background:var(--excelente)"></span>
+          <span style="--w:36%;background:var(--sinclases)"></span>
+          <span style="--w:3.6%;background:var(--sinregistro)"></span>
+          <span style="--w:35.7%;background:var(--critico)"></span>
+        </div>
+        <div class="legend" style="margin-top:12px">
+          <span><i style="--c:var(--excelente)"></i>Evaluados (7)</span>
+          <span><i style="--c:var(--sinclases)"></i>Sin clases (10)</span>
+          <span><i style="--c:var(--sinregistro)"></i>Sin foto (1)</span>
+          <span><i style="--c:var(--critico)"></i>Ausencia crítica (10)</span>
+        </div>
+      </div>
+      <div class="impact">
+        <div><b>Sin evidencia</b><span>No hay fotos que respalden la evaluación del día 14 ni de los días 19 al 28.</span></div>
+        <div><b>Sin continuidad</b><span>Nunca hubo dos evaluaciones seguidas después del día 6, así que no se puede ver una tendencia.</span></div>
+        <div><b>Sin responsables claros</b><span>Los días 1 y 2 no registraron encargados.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>Evaluación de limpieza de sala · proyecto escolar</footer>
+
+<script>
+const S={
+  excelente:{n:'Excelente',c:'var(--excelente)'},bueno:{n:'Bueno',c:'var(--bueno)'},regular:{n:'Regular',c:'var(--regular)'},
+  mejorable:{n:'Mejorable',c:'var(--mejorable)'},irregular:{n:'Irregular',c:'var(--irregular)'},deficiente:{n:'Deficiente',c:'var(--deficiente)'},
+  sinclases:{n:'Sin clases',c:'var(--sinclases)'},sinregistro:{n:'Sin registro',c:'var(--sinregistro)'},critico:{n:'Ausencia crítica',c:'var(--critico)'}
+};
+const D=[
+ {a:1,b:1,s:'regular',t:'Sillas no todas arriba, basura en los puestos y papeles o envoltorios en el suelo.'},
+ {a:2,b:2,s:'mejorable',t:'Sillas arriba, pero sin barrer ni limpiar la basura de los puestos.'},
+ {a:3,b:4,s:'sinclases',l:'Sin clases / sin registro',t:'No hubo clases y no hay registro de estos días.'},
+ {a:5,b:5,s:'excelente',w:'Matías Maite, Dániza y Byron Burgos',t:'Sillas arriba, sin basura ni residuos.'},
+ {a:6,b:6,s:'bueno',w:'Philippe Flores y Teodora Vera',t:'Sillas arriba, con algunos pocos papeles en el suelo.'},
+ {a:7,b:8,s:'sinclases',t:'No hubo clases.'},
+ {a:9,b:9,s:'regular',w:'Francisca Espinosa y Sofía Villa',t:'Sillas arriba, pero los puestos estaban sucios.'},
+ {a:10,b:12,s:'sinclases',t:'No hubo clases.'},
+ {a:13,b:13,s:'deficiente',w:'Benjamín Berrios y Fernando Miranda',t:'Mitad de las sillas arriba y mitad abajo, papeles en el suelo y bolsas en el mesón.'},
+ {a:14,b:14,s:'sinregistro',l:'Sin foto / sin registro',t:'No hay foto ni registro de este día.'},
+ {a:15,b:15,s:'irregular',w:'Alexandra Lamolina y Carlos Carroces',t:'Ninguna silla arriba y papeles sobre una mesa, pero el suelo estaba limpio.'},
+ {a:16,b:18,s:'sinclases',t:'No hubo clases.'},
+ {a:19,b:28,s:'critico',t:'Ausencia crítica de registros visuales: no hay fotos de la actividad en ninguno de estos días.'}
+];
+const group=s=>['sinclases'].includes(s)?'noclass':(s==='sinregistro'||s==='critico')?'norec':'eval';
+const $=id=>document.getElementById(id);
+
+// Tarjetas
+$('cards').innerHTML=D.map((e,i)=>{
+  const day=e.a===e.b?`Día ${e.a}`:`Días ${e.a} al ${e.b}`;
+  return `<article class="glass card rv" id="c${e.a}" data-g="${group(e.s)}" style="--c:${S[e.s].c};--d:${(i%3)*.08}s">
+    <div class="day">${day}</div><span class="badge">${e.l||S[e.s].n}</span>
+    <p>${e.t}</p>${e.w?`<div class="who"><b>Encargados:</b> ${e.w}</div>`:''}</article>`}).join('');
+
+// Calendario
+const status={};D.forEach(e=>{for(let d=e.a;d<=e.b;d++)status[d]={s:e.s,id:'c'+e.a}});
+$('grid').innerHTML=Array.from({length:28},(_,i)=>{const d=i+1,x=status[d];
+  return `<button class="cell" data-s="${x.s}" data-id="${x.id}" style="--c:${S[x.s].c}" aria-label="Día ${d}: ${S[x.s].n}" title="Día ${d}: ${S[x.s].n}">${d}</button>`}).join('');
+$('legend').innerHTML=['excelente','bueno','regular','mejorable','irregular','deficiente','sinclases','critico'].map(k=>`<span><i style="--c:${S[k].c}"></i>${S[k].n}</span>`).join('');
+
+// Secuencia de entrada del calendario
+document.querySelectorAll('.cell').forEach((c,i)=>setTimeout(()=>c.classList.add('on'),500+i*55));
+document.querySelectorAll('.cell').forEach(c=>c.addEventListener('click',()=>{
+  const el=$(c.dataset.id);document.querySelectorAll('.chip')[0].click();
+  el.scrollIntoView({behavior:'smooth',block:'center'});
+  el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');
+}));
+
+// Estadísticas con contador
+const stats=[['7','Días con evaluación',' var(--excelente)'],['10','Días sin clases','var(--sinclases)'],['1','Día sin foto','var(--sinregistro)'],['10','Días con ausencia crítica de registros','var(--critico)']];
+$('stats').innerHTML=stats.map(([n,l,c],i)=>`<div class="glass stat rv" style="--d:${i*.1}s"><b data-n="${n}" style="color:${c}">0</b><span>${l}</span></div>`).join('');
+function count(el){const n=+el.dataset.n;let t0;const step=t=>{t0=t0||t;const p=Math.min((t-t0)/1000,1);el.textContent=Math.round(n*p);if(p<1)requestAnimationFrame(step)};requestAnimationFrame(step)}
+
+// Filtros
+$('filters').addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;
+  document.querySelectorAll('.chip').forEach(x=>x.setAttribute('aria-pressed',x===b));
+  document.querySelectorAll('.card').forEach(c=>c.classList.toggle('hide',b.dataset.f!=='all'&&c.dataset.g!==b.dataset.f));
+});
+
+// Aparición al hacer scroll
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');
+  e.target.querySelectorAll&&e.target.querySelectorAll('[data-n]').forEach(count);io.unobserve(e.target)}}),{threshold:.15});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
